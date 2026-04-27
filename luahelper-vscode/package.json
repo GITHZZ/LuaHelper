@@ -2,7 +2,7 @@
     "name": "luahelper",
     "displayName": "Lua",
     "description": "LuaHelper, Intellisense, Linting, Debugging, Code formatting, High-performance, and more.",
-    "version": "0.2.29",
+    "version": "0.2.30",
     "publisher": "yinfei",
     "author": {
         "name": "yinfei",
@@ -370,6 +370,28 @@
                         "%luahelper.project.requirePathSeparator1%",
                         "%luahelper.project.requirePathSeparator2%"
                     ]
+                },
+                "luahelper.base.extraGlobals": {
+                    "default": [
+                        "CS"
+                    ],
+                    "items": {
+                        "type": "string"
+                    },
+                    "markdownDescription": "%luahelper.base.extraGlobals%",
+                    "scope": "resource",
+                    "type": "array"
+                },
+                "luahelper.base.extraGlobalFunctions": {
+                    "default": [
+                        "typeof"
+                    ],
+                    "items": {
+                        "type": "string"
+                    },
+                    "markdownDescription": "%luahelper.base.extraGlobalFunctions%",
+                    "scope": "resource",
+                    "type": "array"
                 },
                 "luahelper.base.ignoreFileOrDir": {
                     "default": [

@@ -214,6 +214,8 @@ async function doStartServer() {
 
     let ignoreFileOrDirArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("ignoreFileOrDir");
     let ignoreFileOrDirErrArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("ignoreFileOrDirError");
+    let extraGlobalsArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("extraGlobals");
+    let extraGlobalFunctionsArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("extraGlobalFunctions");
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ scheme: 'file', language: LANGUAGE_ID }],
@@ -253,6 +255,8 @@ async function doStartServer() {
             CheckFuncReturnType: getWarnCheckFlag("CheckFuncReturnType"),
             IgnoreFileOrDir: ignoreFileOrDirArr,
             IgnoreFileOrDirError: ignoreFileOrDirErrArr,
+            ExtraGlobals: extraGlobalsArr,
+            ExtraGlobalFunctions: extraGlobalFunctionsArr,
             RequirePathSeparator: requirePathSeparator,
             EnableReport: enableReportFlag,
         },

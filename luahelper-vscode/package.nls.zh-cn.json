@@ -11,6 +11,8 @@
     "luahelper.project.requirePathSeparator": "require其他文件时的路径分割符，默认为 require('one.bb')",
     "luahelper.project.requirePathSeparator1": "默认为 . 例如 require('one.bb')",
     "luahelper.project.requirePathSeparator2": "设置为 / require('one/bb')",
+    "luahelper.base.extraGlobals": "额外全局变量，诊断时视为已定义。例如xLua的CS。",
+    "luahelper.base.extraGlobalFunctions": "额外全局函数，诊断时视为已定义。例如xLua的typeof。",
     "luahelper.format.errShow": "如果格式化错误了，是否要显示错误",
     "luahelper.show.online": "显示当前插件在线人数",
     "luahelper.show.costTime": "显示插件启动时间",

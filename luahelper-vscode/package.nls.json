@@ -11,6 +11,8 @@
     "luahelper.project.requirePathSeparator": "require other file path's separator, default is . , Example: require('one.bb')",
     "luahelper.project.requirePathSeparator1": "default is . Example: require('one.bb')",
     "luahelper.project.requirePathSeparator2": "set as / Example: require('one/bb')",
+    "luahelper.base.extraGlobals": "Additional global variables treated as defined by diagnostics, for example xLua's CS.",
+    "luahelper.base.extraGlobalFunctions": "Additional global functions treated as defined by diagnostics, for example xLua's typeof.",
     "luahelper.format.errShow": "If the format is wrong, whether to display the error",
     "luahelper.reference.incudeDefine": "Whether to include definitions when displaying references",
     "luahelper.lspserver.log": "Whether to open lsp server log",

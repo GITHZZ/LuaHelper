@@ -20,6 +20,12 @@ type SnippetItem struct {
 	Detail     string // 描述信息
 }
 
+type extraGlobalPrevInfo struct {
+	luaInType           string
+	luaInExist          bool
+	ignoreSysNoUseExist bool
+}
+
 // GlobalConfig 对外封装的全局配置信息
 type GlobalConfig struct {
 	// 是否读取了ylua.json配置文件，如果读取到了配置文件，获取相应的配置；如果没有读取到配置，默认以客户端的模式
@@ -157,6 +163,8 @@ type GlobalConfig struct {
 
 	// 存放所有标准库和模块的全局变量，map管理；系统的函数和模块转换成想要的VarInfo，统一起来
 	SysVarMap map[string]*VarInfo
+
+	extraGlobalPrevMap map[string]extraGlobalPrevInfo
 }
 
 // GConfig *GlobalConfig 全局配置对象初始化
@@ -179,6 +187,7 @@ func createDefaultGlobalConfig() {
 		ReferOtherFileMap:      map[string]bool{},
 		IgnoreLocalNoUseVarMap: map[string]bool{},
 		IgnoreWildcarVarMap:    []string{},
+		extraGlobalPrevMap:     map[string]extraGlobalPrevInfo{},
 		PathSeparator:          ".",
 		anntotateSets:          []AnntotateSet{},
 		dirManager:             createDirManager(),
@@ -766,6 +775,62 @@ func (g *GlobalConfig) SetRequirePathSeparator(pathSeparator string) {
 	}
 
 	GConfig.PathSeparator = pathSeparator
+}
+
+// SetExtraGlobalVars 设置客户端额外声明的全局变量与函数，避免未定义告警。
+func (g *GlobalConfig) SetExtraGlobalVars(extraGlobals []string, extraGlobalFunctions []string) {
+	if g.LuaInMap == nil || g.ignoreSysNoUseMap == nil {
+		return
+	}
+
+	for strName, prevInfo := range g.extraGlobalPrevMap {
+		if prevInfo.luaInExist {
+			g.LuaInMap[strName] = prevInfo.luaInType
+		} else {
+			delete(g.LuaInMap, strName)
+		}
+
+		if prevInfo.ignoreSysNoUseExist {
+			g.ignoreSysNoUseMap[strName] = true
+		} else {
+			delete(g.ignoreSysNoUseMap, strName)
+		}
+	}
+	g.extraGlobalPrevMap = map[string]extraGlobalPrevInfo{}
+
+	for _, strName := range extraGlobals {
+		strName = strings.TrimSpace(strName)
+		if strName == "" {
+			continue
+		}
+		g.saveExtraGlobalPrevInfo(strName)
+		g.LuaInMap[strName] = "module"
+		g.ignoreSysNoUseMap[strName] = true
+	}
+
+	for _, strName := range extraGlobalFunctions {
+		strName = strings.TrimSpace(strName)
+		if strName == "" {
+			continue
+		}
+		g.saveExtraGlobalPrevInfo(strName)
+		g.LuaInMap[strName] = "function"
+		g.ignoreSysNoUseMap[strName] = true
+	}
+}
+
+func (g *GlobalConfig) saveExtraGlobalPrevInfo(strName string) {
+	if _, ok := g.extraGlobalPrevMap[strName]; ok {
+		return
+	}
+
+	luaInType, luaInExist := g.LuaInMap[strName]
+	_, ignoreSysNoUseExist := g.ignoreSysNoUseMap[strName]
+	g.extraGlobalPrevMap[strName] = extraGlobalPrevInfo{
+		luaInType:           luaInType,
+		luaInExist:          luaInExist,
+		ignoreSysNoUseExist: ignoreSysNoUseExist,
+	}
 }
 
 // SetPreviewFieldsNum set preview fields num

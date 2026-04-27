@@ -48,6 +48,8 @@ type InitializationOptions struct {
 	CheckFuncReturnType            bool     `json:"CheckFuncReturnType,omitempty"`
 	IgnoreFileOrDir                []string `json:"IgnoreFileOrDir,omitempty"`
 	IgnoreFileOrDirError           []string `json:"IgnoreFileOrDirError,omitempty"`
+	ExtraGlobals                   []string `json:"ExtraGlobals,omitempty"`
+	ExtraGlobalFunctions           []string `json:"ExtraGlobalFunctions,omitempty"`
 	RequirePathSeparator           string   `json:"RequirePathSeparator,omitempty"`
 	EnableReport                   bool     `json:"EnableReport,omitempty"`
 }
@@ -89,7 +91,8 @@ func (l *LspServer) Initialize(ctx context.Context, vs InitializeParams) (lsp.In
 	checkFlagList := getCheckFlagList(initOptions)
 
 	initErr := l.initialCheckProject(ctx, checkFlagList, initOptions.Client, workspaceFolderNum, vs.WorkspaceFolders,
-		initOptions.LocalRun, initOptions.IgnoreFileOrDir, initOptions.IgnoreFileOrDirError)
+		initOptions.LocalRun, initOptions.IgnoreFileOrDir, initOptions.IgnoreFileOrDirError,
+		initOptions.ExtraGlobals, initOptions.ExtraGlobalFunctions)
 	if initErr != nil {
 		log.Error("initial luahelper err: " + initErr.Error())
 		return lsp.InitializeResult{}, initErr
@@ -156,7 +159,7 @@ func (l *LspServer) Initialized(ctx context.Context, initialParam InitializedPar
 // checkList 为检查关卡的切片
 func (l *LspServer) initialCheckProject(ctx context.Context, checkFlagList []bool, clientType string,
 	workspaceFolderNum int, workspaceFolder []lsp.WorkspaceFolder, isLocal bool, ignoreFileOrDir []string,
-	ignoreFileOrDirErr []string) error {
+	ignoreFileOrDirErr []string, extraGlobals []string, extraGlobalFunctions []string) error {
 	// 目录管理统一设置vscodeRoot目录
 	dirManager := common.GConfig.GetDirManager()
 	vscodeRoot := dirManager.GetVsRootDir()
@@ -167,6 +170,7 @@ func (l *LspServer) initialCheckProject(ctx context.Context, checkFlagList []boo
 		ignoreFileOrDirErr); readErr != nil {
 		return readErr
 	}
+	common.GConfig.SetExtraGlobalVars(extraGlobals, extraGlobalFunctions)
 
 	if isLocal {
 		// 为本地运行，没有插件前端，插件前端无法传递额外的Lua文件夹，忽略系统的模块和变量
@@ -279,6 +283,8 @@ func getDefaultIntialOptions() (initOptions *InitializationOptions) {
 		CheckConstAssign:               false,
 		CheckFuncParamType:             false,
 		CheckFuncReturnType:            false,
+		ExtraGlobals:                   []string{"CS"},
+		ExtraGlobalFunctions:           []string{"typeof"},
 	}
 
 	return initOptions

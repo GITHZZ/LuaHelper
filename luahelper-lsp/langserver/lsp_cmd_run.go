@@ -31,7 +31,7 @@ func (l *LspServer) RunLocalDiagnostices(localpath string) {
 
 	ctx := context.Background()
 
-	initErr := l.initialCheckProject(ctx, checkFlagList, "local", 0, nil, true, nil, nil)
+	initErr := l.initialCheckProject(ctx, checkFlagList, "local", 0, nil, true, nil, nil, nil, nil)
 	if initErr != nil {
 		log.Error("initial luahelper err: " + initErr.Error())
 		return

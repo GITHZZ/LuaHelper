@@ -56,6 +56,8 @@ type BaseParams struct {
 	Rootdir              string   `json:"Rootdir,omitempty"`
 	IgnoreFileOrDir      []string `json:"IgnoreFileOrDir,omitempty"`
 	IgnoreFileOrDirError []string `json:"IgnoreFileOrDirError,omitempty"`
+	ExtraGlobals         []string `json:"ExtraGlobals,omitempty"`
+	ExtraGlobalFunctions []string `json:"ExtraGlobalFunctions,omitempty"`
 	RequirePathSeparator string   `json:"RequirePathSeparator,omitempty"`
 	ReferenceMaxNum      int      `json:"ReferenceMaxNum,omitempty"`
 	ReferenceDefineFlag  bool     `json:"ReferenceIncudeDefine,omitempty"`
@@ -181,6 +183,7 @@ func (l *LspServer) ChangeConfiguration(ctx context.Context, vs ChangeConfigurat
 
 	// 设置require其他lua文件的路径分割
 	common.GConfig.SetRequirePathSeparator(base.RequirePathSeparator)
+	common.GConfig.SetExtraGlobalVars(base.ExtraGlobals, base.ExtraGlobalFunctions)
 
 	return l.handleChange(ctx)
 }
