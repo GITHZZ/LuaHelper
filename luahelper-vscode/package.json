@@ -2,7 +2,7 @@
     "name": "luahelper",
     "displayName": "Lua",
     "description": "LuaHelper, Intellisense, Linting, Debugging, Code formatting, High-performance, and more.",
-    "version": "0.2.30",
+    "version": "0.2.31",
     "publisher": "yinfei",
     "author": {
         "name": "yinfei",
@@ -373,7 +373,8 @@
                 },
                 "luahelper.base.extraGlobals": {
                     "default": [
-                        "CS"
+                        "CS",
+                        "xlua"
                     ],
                     "items": {
                         "type": "string"
@@ -653,13 +654,13 @@
                     "description": "%luahelper.Warn.CheckSyntax%"
                 },
                 "luahelper.Warn.CheckNoDefine": {
-                    "default": false,
+                    "default": true,
                     "scope": "resource",
                     "type": "boolean",
                     "description": "%luahelper.Warn.CheckNoDefine%"
                 },
                 "luahelper.Warn.CheckAfterDefine": {
-                    "default": false,
+                    "default": true,
                     "scope": "resource",
                     "type": "boolean",
                     "description": "%luahelper.Warn.CheckAfterDefine%"

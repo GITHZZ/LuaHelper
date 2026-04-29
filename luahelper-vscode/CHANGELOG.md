@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.2.31 (Apr 29, 2026)
++ 默认开启 CheckNoDefine 与 CheckAfterDefine 告警项
++ 默认额外全局变量新增 xlua（保留 CS）
++ [Github](https://github.com/Tencent/LuaHelper)  https://github.com/Tencent/LuaHelper
+
 ## 0.2.30 (Apr 27, 2026)
 + 增加xLua全局变量CS与typeof的语法高亮
 + 增加额外全局变量与全局函数配置，用于忽略自定义全局符号未定义告警
