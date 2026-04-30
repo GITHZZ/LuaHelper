@@ -21,6 +21,7 @@ func (l *LspServer) TextDocumentDidOpen(ctx context.Context, vs lsp.DidOpenTextD
 	project := l.getAllProject()
 	if !project.IsNeedHandle(strFile) {
 		log.Debug("not need to handle strFile=%s", strFile)
+		l.ClearTrackedFileDiagnostic(ctx, strFile)
 		return nil
 	}
 
@@ -67,6 +68,7 @@ func (l *LspServer) TextDocumentDidChange(ctx context.Context, vs lsp.DidChangeT
 	project := l.getAllProject()
 	if !project.IsNeedHandle(strFile) {
 		log.Debug("not need to handle strFile=%s", strFile)
+		l.ClearTrackedFileDiagnostic(ctx, strFile)
 		return nil
 	}
 
@@ -121,6 +123,7 @@ func (l *LspServer) WorkspaceChangeWatchedFiles(ctx context.Context, vs lsp.DidC
 		strFile := pathpre.VscodeURIToString(string(fileEvents.URI))
 		if !project.IsNeedHandle(strFile) {
 			log.Debug("not need to handle strFile=%s", strFile)
+			l.ClearTrackedFileDiagnostic(ctx, strFile)
 			continue
 		}
 
@@ -164,6 +167,7 @@ func (l *LspServer) TextDocumentDidClose(ctx context.Context, vs lsp.DidCloseTex
 	project := l.getAllProject()
 	if !project.IsNeedHandle(strFile) {
 		log.Debug("not need to handle strFile=%s", strFile)
+		l.ClearTrackedFileDiagnostic(ctx, strFile)
 		return nil
 	}
 
@@ -197,6 +201,7 @@ func (l *LspServer) TextDocumentDidSave(ctx context.Context, vs lsp.DidSaveTextD
 	project := l.getAllProject()
 	if !project.IsNeedHandle(strFile) {
 		log.Debug("not need to handle strFile=%s", strFile)
+		l.ClearTrackedFileDiagnostic(ctx, strFile)
 		return nil
 	}
 

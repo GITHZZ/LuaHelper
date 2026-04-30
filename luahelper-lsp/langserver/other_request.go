@@ -53,16 +53,25 @@ type ComletionParams struct {
 
 // ProjectParams 工程的设置
 type BaseParams struct {
-	Rootdir              string   `json:"Rootdir,omitempty"`
-	IgnoreFileOrDir      []string `json:"IgnoreFileOrDir,omitempty"`
-	IgnoreFileOrDirError []string `json:"IgnoreFileOrDirError,omitempty"`
-	ExtraGlobals         []string `json:"ExtraGlobals,omitempty"`
-	ExtraGlobalFunctions []string `json:"ExtraGlobalFunctions,omitempty"`
-	RequirePathSeparator string   `json:"RequirePathSeparator,omitempty"`
-	ReferenceMaxNum      int      `json:"ReferenceMaxNum,omitempty"`
-	ReferenceDefineFlag  bool     `json:"ReferenceIncudeDefine,omitempty"`
-	PreviewFieldsNum     int      `json:"PreviewFieldsNum,omitempty"`
-	EnableReport         bool     `json:"Report,omitempty"`
+	Rootdir                    string   `json:"Rootdir,omitempty"`
+	IgnoreFileOrDir            []string `json:"ignoreFileOrDir,omitempty"`
+	IgnoreFileOrDirError       []string `json:"ignoreFileOrDirError,omitempty"`
+	IgnoreFileOrDirDiagnostics []string `json:"ignoreFileOrDirDiagnostics,omitempty"`
+	ExtraGlobals               []string `json:"ExtraGlobals,omitempty"`
+	ExtraGlobalFunctions       []string `json:"ExtraGlobalFunctions,omitempty"`
+	RequirePathSeparator       string   `json:"RequirePathSeparator,omitempty"`
+	ReferenceMaxNum            int      `json:"ReferenceMaxNum,omitempty"`
+	ReferenceDefineFlag        bool     `json:"ReferenceIncudeDefine,omitempty"`
+	PreviewFieldsNum           int      `json:"PreviewFieldsNum,omitempty"`
+	EnableReport               bool     `json:"Report,omitempty"`
+}
+
+func (b BaseParams) GetIgnoreFileOrDirError() []string {
+	if len(b.IgnoreFileOrDirDiagnostics) > 0 {
+		return b.IgnoreFileOrDirDiagnostics
+	}
+
+	return b.IgnoreFileOrDirError
 }
 
 // WarnParams 引用的设置
@@ -179,7 +188,7 @@ func (l *LspServer) ChangeConfiguration(ctx context.Context, vs ChangeConfigurat
 	// 按顺序插入
 	checkFlagList := getWarnCheckList(&vs.Settings.Luahelper.WarnParam)
 
-	common.GConfig.HandleChangeCheckList(checkFlagList, base.IgnoreFileOrDir, base.IgnoreFileOrDirError)
+	common.GConfig.HandleChangeCheckList(checkFlagList, base.IgnoreFileOrDir, base.GetIgnoreFileOrDirError())
 
 	// 设置require其他lua文件的路径分割
 	common.GConfig.SetRequirePathSeparator(base.RequirePathSeparator)
@@ -191,6 +200,9 @@ func (l *LspServer) ChangeConfiguration(ctx context.Context, vs ChangeConfigurat
 // clearLspServer 清空存在的信息
 func (l *LspServer) clearLspServer(ctx context.Context) {
 	for strFile := range l.fileErrorMap {
+		l.ClearOneFileDiagnostic(ctx, strFile)
+	}
+	for strFile := range l.fileChangeErrorMap {
 		l.ClearOneFileDiagnostic(ctx, strFile)
 	}
 

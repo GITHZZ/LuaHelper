@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.32 (Apr 30, 2026)
++ 修复设置项文案映射异常，避免 `Luahelper > Base : Ignore File Or Dir Error` 显示重复
++ 将忽略诊断配置项重命名为 `luahelper.base.ignoreFileOrDirDiagnostics`，并兼容历史配置读取
++ 修复配置忽略文件后，已打开文件的语法诊断未及时清除的问题
++ [Github](https://github.com/Tencent/LuaHelper)  https://github.com/Tencent/LuaHelper
+
 ## 0.2.31 (Apr 29, 2026)
 + 默认开启 CheckNoDefine 与 CheckAfterDefine 告警项
 + 默认额外全局变量新增 xlua（保留 CS）

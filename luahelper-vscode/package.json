@@ -2,7 +2,7 @@
     "name": "luahelper",
     "displayName": "Lua",
     "description": "LuaHelper, Intellisense, Linting, Debugging, Code formatting, High-performance, and more.",
-    "version": "0.2.31",
+    "version": "0.2.32",
     "publisher": "yinfei",
     "author": {
         "name": "yinfei",
@@ -402,11 +402,11 @@
                     "items": {
                         "type": "string"
                     },
-                    "markdownDescription": "%luahelper.project.IgnoreFileOrDir%",
+                    "markdownDescription": "%luahelper.base.IgnoreFileOrDir%",
                     "scope": "resource",
                     "type": "array"
                 },
-                "luahelper.base.ignoreFileOrDirError": {
+                "luahelper.base.ignoreFileOrDirDiagnostics": {
                     "default": [
                         ".vscode/",
                         "one11.lua"
@@ -414,7 +414,7 @@
                     "items": {
                         "type": "string"
                     },
-                    "markdownDescription": "%luahelper.project.IgnoreFileOrDirErrors%",
+                    "markdownDescription": "%luahelper.base.IgnoreFileOrDirDiagnostics%",
                     "scope": "resource",
                     "type": "array"
                 },

@@ -94,6 +94,13 @@ func (l *LspServer) ClearOneFileDiagnostic(ctx context.Context, strFile string) 
 	l.sendDiagnostics(ctx, diagnostics)
 }
 
+// ClearTrackedFileDiagnostic clears both published and cached diagnostics for a file.
+func (l *LspServer) ClearTrackedFileDiagnostic(ctx context.Context, strFile string) {
+	delete(l.fileErrorMap, strFile)
+	delete(l.fileChangeErrorMap, strFile)
+	l.ClearOneFileDiagnostic(ctx, strFile)
+}
+
 // RemoveFile 非工程文件被删除，清除错误
 func (l *LspServer) RemoveFile(strFile string) {
 	delete(l.fileErrorMap, strFile)

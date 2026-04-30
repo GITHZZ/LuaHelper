@@ -107,6 +107,45 @@ function getWarnCheckFlag(str: string): boolean {
     return checkFlag;
 }
 
+function getConfiguredStringArray(config: vscode.WorkspaceConfiguration, key: string): string[] | undefined {
+    const inspectValue = config.inspect<string[]>(key);
+    if (inspectValue === undefined) {
+        return undefined;
+    }
+
+    const configuredValue = inspectValue.workspaceFolderValue
+        || inspectValue.workspaceValue
+        || inspectValue.globalValue;
+    if (Array.isArray(configuredValue)) {
+        return configuredValue as string[];
+    }
+
+    return undefined;
+}
+
+function getStringArrayConfigWithFallback(primarySection: string, primaryKey: string, fallbackPaths: string[]): string[] | undefined {
+    const primaryConfig = vscode.workspace.getConfiguration(primarySection, null);
+    const primaryConfiguredValue = getConfiguredStringArray(primaryConfig, primaryKey);
+    if (primaryConfiguredValue !== undefined) {
+        return primaryConfiguredValue;
+    }
+
+    const luahelperConfig = vscode.workspace.getConfiguration("luahelper", null);
+    for (const fallbackPath of fallbackPaths) {
+        const fallbackConfiguredValue = getConfiguredStringArray(luahelperConfig, fallbackPath);
+        if (fallbackConfiguredValue !== undefined) {
+            return fallbackConfiguredValue;
+        }
+    }
+
+    let primaryValue = primaryConfig.get(primaryKey);
+    if (Array.isArray(primaryValue)) {
+        return primaryValue as string[];
+    }
+
+    return undefined;
+}
+
 function onDidChangeTextDocument(event: vscode.TextDocumentChangeEvent) {
     if (activeEditor && activeEditor.document === event.document && activeEditor.document.languageId === LANGUAGE_ID
         && client) {
@@ -212,8 +251,17 @@ async function doStartServer() {
         }
     }
 
-    let ignoreFileOrDirArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("ignoreFileOrDir");
-    let ignoreFileOrDirErrArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("ignoreFileOrDirError");
+    // Keep backward compatibility for users who configured old/mismatched keys.
+    let ignoreFileOrDirArr: string[] | undefined = getStringArrayConfigWithFallback(
+        "luahelper.base",
+        "ignoreFileOrDir",
+        ["project.IgnoreFileOrDir", "workspace.IgnoreFileOrDir"]
+    );
+    let ignoreFileOrDirErrArr: string[] | undefined = getStringArrayConfigWithFallback(
+        "luahelper.base",
+        "ignoreFileOrDirDiagnostics",
+        ["base.ignoreFileOrDirError", "project.IgnoreFileOrDirErrors", "workspace.IgnoreFileOrDirErrors"]
+    );
     let extraGlobalsArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("extraGlobals");
     let extraGlobalFunctionsArr: string[] | undefined = vscode.workspace.getConfiguration("luahelper.base", null).get("extraGlobalFunctions");
 
